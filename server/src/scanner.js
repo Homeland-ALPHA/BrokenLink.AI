@@ -222,6 +222,28 @@ const createResult = ({ link, statusCode, broken, timeTakenMs, sourceType, reaso
   return result;
 };
 
+const buildRobotsBlockedResult = (url) =>
+  createResult({
+    link: url,
+    statusCode: 403,
+    broken: true,
+    timeTakenMs: 0,
+    sourceType: 'robots.txt',
+    reason: 'robots.txt',
+  });
+
+const checkRobotsPermission = async (url, ownerOptions) => {
+  try {
+    await ensureRobotsAllowed(url, ownerOptions);
+    return { allowed: true, result: null };
+  } catch (error) {
+    if (error?.reason === 'robots.txt') {
+      return { allowed: false, result: buildRobotsBlockedResult(url) };
+    }
+    throw error;
+  }
+};
+
 const fetchPageWithAxios = async (url, ownerOptions) => {
   const start = performance.now();
   try {
@@ -497,8 +519,6 @@ export const scanWebsite = async (startUrl, scanOptions = {}) => {
     throw error;
   }
 
-  await ensureRobotsAllowed(start, ownerOptions);
-
   const origin = new URL(start).origin;
   const queue = [start];
   const visitedPages = new Set();
@@ -513,7 +533,11 @@ export const scanWebsite = async (startUrl, scanOptions = {}) => {
 
     visitedPages.add(current);
 
-    await ensureRobotsAllowed(current, ownerOptions);
+    const robotsStatus = await checkRobotsPermission(current, ownerOptions);
+    if (!robotsStatus.allowed) {
+      findings.push(robotsStatus.result);
+      continue;
+    }
 
     let pageFetch = await fetchPageWithAxios(current, ownerOptions);
     let html = pageFetch.html;
