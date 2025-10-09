@@ -21,6 +21,7 @@ const HEADLESS_PUPPETEER = (process.env.PUPPETEER_HEADLESS ?? 'true').toLowerCas
 const TRANSIENT_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const TRANSIENT_ERROR_CODES = new Set(['ETIMEDOUT', 'ECONNRESET', 'ECONNABORTED', 'EPIPE', 'ENOTFOUND', 'EAI_AGAIN']);
 const MAX_BROWSER_WAIT_MS = 10000;
+const MAX_SCAN_DURATION_MS = 45000;
 
 const httpClient = axios.create({
   timeout: REQUEST_TIMEOUT_MS,
@@ -524,8 +525,14 @@ export const scanWebsite = async (startUrl, scanOptions = {}) => {
   const visitedPages = new Set();
   const seenResources = new Set();
   const findings = [];
+  const deadline = Date.now() + MAX_SCAN_DURATION_MS;
+  let timedOut = false;
 
   while (queue.length > 0 && findings.length < maxFindings) {
+    if (Date.now() > deadline) {
+      timedOut = true;
+      break;
+    }
     const current = queue.shift();
     if (!current || visitedPages.has(current)) {
       continue;
@@ -638,6 +645,10 @@ export const scanWebsite = async (startUrl, scanOptions = {}) => {
       }
       findings.push(headResult.result);
     }
+  }
+
+  if (timedOut) {
+    logRequest('scan', start, { reason: 'duration-cap', level: 'warn', findings: findings.length });
   }
 
   return findings.slice(0, maxFindings);
