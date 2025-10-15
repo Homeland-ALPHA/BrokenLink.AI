@@ -1,0 +1,68 @@
+﻿<!-- File: client/index.html - Root HTML for BrokenLink AI frontend -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BrokenLink AI | Monitor Broken Links &amp; Assets</title>
+    <meta
+      name="description"
+      content="BrokenLink AI helps marketing teams detect broken links, missing images, and redirect loops before they impact visitors or Google AdSense reviews."
+    />
+    <meta
+      name="keywords"
+      content="broken links, website monitoring, link checker, SEO audit, AdSense compliance"
+    />
+    <link rel="canonical" href="https://brokenlink.ai/" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:title" content="BrokenLink AI | Monitor Broken Links &amp; Assets" />
+    <meta
+      property="og:description"
+      content="Crawl up to 100 pages per scan, surface accessibility issues, and get AdSense-ready diagnostics in minutes."
+    />
+    <meta property="og:url" content="https://brokenlink.ai/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://brokenlink.ai/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BrokenLink AI | Monitor Broken Links &amp; Assets" />
+    <meta
+      name="twitter:description"
+      content="Automated link monitoring that keeps your site polished and AdSense compliant."
+    />
+    <meta name="twitter:image" content="https://brokenlink.ai/og-image.png" />
+    <meta name="theme-color" content="#0f172a" />
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5520257741352291"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      async
+      src="https://fundingchoicesmessages.google.com/i/pub-5520257741352291?ers=1"
+      nonce="brokenlink-ai"
+    ></script>
+    <script nonce="brokenlink-ai">
+      (function () {
+        function signalGooglefcPresent() {
+          if (!window.frames.googlefcPresent) {
+            if (document.body) {
+              const iframe = document.createElement('iframe');
+              iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
+              iframe.style.display = 'none';
+              iframe.name = 'googlefcPresent';
+              document.body.appendChild(iframe);
+            } else {
+              setTimeout(signalGooglefcPresent, 0);
+            }
+          }
+        }
+        signalGooglefcPresent();
+      })();
+    </script>
+  </head>
+  <body class="bg-slate-950 text-slate-100">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
